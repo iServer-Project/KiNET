@@ -1,0 +1,31 @@
+###############
+# KiNET addon #
+# for iServer #
+###############
+@call function(atLoad:Event)[
+  echo \[KiNET\] The system is loading...
+] else [
+  echo \[KiNET\] An error has ocurred.
+  @addon->disable
+]
+@call function(onPlayerConnect:Event)[
+  echo \[KiNET\] %player+getName();% is connecting from sourceport %player+getIP+getSourcePort%
+]
+-load public(@cancel->toggle+0=%port%)[
+  echo \[KiNET\] WARNING: Player is trying to hack / exploit the server, but has been blocked
+  &function+getPlayer(name)+disconnect["iServer hack #101: Please don't hack!"];
+]
+-load public(@cancel->addonFunction+!null=disable)[
+  echo \[KinET\] Plugin disabled. Checking what happend...
+] elseif(@level=1) [
+  echo \[KiNET\] KiNET has been improperly set up. Please refer to the CONFIG.PROPERTIES to check for mistakes
+] elseif(@level=2) [
+  echo \[KiNET\] Internal error
+] elseif(@level=3) [
+  echo \[KiNET\] %err_type%: %error_msg% \(%error_code%\)
+]
+@function(final) [
+  echo \[KiNET\] KiNET has detected a server flaw. It will now shut down EVERYTHING to prevent data loss, or exploiting.
+  &this+shutdown
+]
+++stream@__close++
